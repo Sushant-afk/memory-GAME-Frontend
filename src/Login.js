@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleLogin } from '@react-oauth/google';
 import { FcGoogle } from 'react-icons/fc';
-import jwtDecode from 'jwt-decode';
+
 
 const Login = () => {
 
-    const responseGoogle = (response) => {
-        console.log(response)
+    const responseGoogle = async (response) => {
         if(response.credential) {
             localStorage.setItem('token', response.credential)
         }
+        return <Redirect to='/leaderboard'/>
     }
     
     return (

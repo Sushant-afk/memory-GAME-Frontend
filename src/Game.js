@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link, redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import './App.css';
 import SingleCard from './components/SingleCard';
 
@@ -22,12 +22,12 @@ const Game = ({ cardState, turnCount, highScore, name }) => {
 
     const logout = async () => {
        try {
-           console.log("logging out...")
            localStorage.setItem('token', null)
        } catch (err) {
         console.log("err", err)
        }
-       redirect("/");
+       console.log("xxx")
+       return <Redirect to='/leaderboard'/>
     };
 
     useEffect(() => { setCards(cardState); setTurns(turnCount); }, [cardState, turnCount])
@@ -36,15 +36,15 @@ const Game = ({ cardState, turnCount, highScore, name }) => {
       const tempCards = cards;
       tempCards[id].flipped = true
       const body =  JSON.stringify({ state: tempCards, turns: turns + 1 })
-      // await axios.post(`http://localhost:5000/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
-      await axios.post(`https://memory-game-backend-8zmy.onrender.com/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
+      await axios.post(`http://localhost:5000/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
+      // await axios.post(`https://memory-game-backend-8zmy.onrender.com/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
     }
 
     const saveTurns = async () => {
       const body = JSON.stringify({ turns: turns + 1 })
       try {
-        // const res1 = await axios.post(`http://localhost:5000/api/game/save-turns`, body, {headers: { 'Content-Type': 'application/json' }});
-        const res1 = await axios.post(`https://memory-game-backend-8zmy.onrender.com/api/game/save-turns`, body, {headers: { 'Content-Type': 'application/json' }});
+        const res1 = await axios.post(`http://localhost:5000/api/game/save-turns`, body, {headers: { 'Content-Type': 'application/json' }});
+        // const res1 = await axios.post(`https://memory-game-backend-8zmy.onrender.com/api/game/save-turns`, body, {headers: { 'Content-Type': 'application/json' }});
       } catch (err) {
         console.log("Errrorrr", err);
       }
@@ -59,8 +59,8 @@ const Game = ({ cardState, turnCount, highScore, name }) => {
       setTurns(0)
       setFirstCard(null)
       const body =  JSON.stringify({ state: [], turns: 0 })
-      // await axios.post(`http://localhost:5000/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
-      await axios.post(`https://memory-game-backend-8zmy.onrender.com/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
+      await axios.post(`http://localhost:5000/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
+      // await axios.post(`https://memory-game-backend-8zmy.onrender.com/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
     }
 
     const handleSelect = (card) => {
