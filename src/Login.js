@@ -11,7 +11,7 @@ const Login = () => {
         if(response.credential) {
             localStorage.setItem('token', response.credential)
         }
-        return <Redirect to='/leaderboard'/>
+        window.location.reload(false);
     }
     
     return (

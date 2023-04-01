@@ -23,8 +23,8 @@ function App() {
 				axios.defaults.headers.common['auth-token'] = `${token}`;
 				setUser(true)
 				setName(user.name)
-				let response = await axios.get('http://localhost:5000/api/auth/login')
-				// let response = await axios.get('https://memory-game-backend-8zmy.onrender.com/api/auth/login')
+				// let response = await axios.get('http://localhost:5000/api/auth/login')
+				let response = await axios.get('https://memory-game-backend-8zmy.onrender.com/api/auth/login')
 				if(response?.data) {
 					setHS(response.data.highScore)
 					if(response.data.gameState) {

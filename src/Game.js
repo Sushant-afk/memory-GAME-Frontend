@@ -18,7 +18,9 @@ const Game = ({ cardState, turnCount, highScore, name }) => {
     const [cards, setCards] = useState([...cardState])
     const [firstCard, setFirstCard] = useState(null)
     const [turns, setTurns] = useState(turnCount);
-    const [matchedCount, setMatchedCount] = useState(0)
+    // const [matchedCount, setMatchedCount] = useState(0)
+
+    // console.log("State", cardState)
 
     const logout = async () => {
        try {
@@ -26,27 +28,47 @@ const Game = ({ cardState, turnCount, highScore, name }) => {
        } catch (err) {
         console.log("err", err)
        }
-       console.log("xxx")
-       return <Redirect to='/leaderboard'/>
+       window.location.reload(false);
     };
 
-    useEffect(() => { setCards(cardState); setTurns(turnCount); }, [cardState, turnCount])
+    const initialState = async () => {
+        try {
+          // let res = await axios.get(`http://localhost:5000/api/game/prev-state`);
+          let res = await axios.get(`https://memory-game-backend-8zmy.onrender.com/api/game/prev-state`);
+          if(res?.data?.gameState?.state) {
+            let istate = res.data.gameState.state;
+            setCards(istate)
+            setTurns(res.data.gameState.turns)
+          }
+        } catch (err) {
+          console.log(err)
+        }
+    }
+
+    useEffect(() => { initialState() }, [])
+
+    // useEffect(() => { setCards(cardState); setTurns(turnCount); }, [cardState, turnCount]);
 
     const saveState = async (id) => {
-      const tempCards = cards;
-      tempCards[id].flipped = true
-      const body =  JSON.stringify({ state: tempCards, turns: turns + 1 })
-      await axios.post(`http://localhost:5000/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
-      // await axios.post(`https://memory-game-backend-8zmy.onrender.com/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
+      try {
+          // console.log("B", cards)
+          const tempCards = cards;
+          tempCards[id].flipped = true
+          const body =  JSON.stringify({ state: tempCards, turns: turns + 1 })
+          // let res = await axios.post(`http://localhost:5000/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
+        await axios.post(`https://memory-game-backend-8zmy.onrender.com/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
+      } catch (err) {
+        console.log("save state api call error ", err)
+      }
     }
 
     const saveTurns = async () => {
       const body = JSON.stringify({ turns: turns + 1 })
       try {
-        const res1 = await axios.post(`http://localhost:5000/api/game/save-turns`, body, {headers: { 'Content-Type': 'application/json' }});
-        // const res1 = await axios.post(`https://memory-game-backend-8zmy.onrender.com/api/game/save-turns`, body, {headers: { 'Content-Type': 'application/json' }});
+        // const res1 = await axios.post(`http://localhost:5000/api/game/save-turns`, body, {headers: { 'Content-Type': 'application/json' }});
+        const res1 = await axios.post(`https://memory-game-backend-8zmy.onrender.com/api/game/save-turns`, body, {headers: { 'Content-Type': 'application/json' }});
       } catch (err) {
-        console.log("Errrorrr", err);
+        console.log("save turns api call error ", err);
       }
     }
 
@@ -59,8 +81,8 @@ const Game = ({ cardState, turnCount, highScore, name }) => {
       setTurns(0)
       setFirstCard(null)
       const body =  JSON.stringify({ state: [], turns: 0 })
-      await axios.post(`http://localhost:5000/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
-      // await axios.post(`https://memory-game-backend-8zmy.onrender.com/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
+      // await axios.post(`http://localhost:5000/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
+      await axios.post(`https://memory-game-backend-8zmy.onrender.com/api/game/save-state`, body, {headers: { 'Content-Type': 'application/json' }});
     }
 
     const handleSelect = (card) => {
@@ -71,13 +93,14 @@ const Game = ({ cardState, turnCount, highScore, name }) => {
           else return prevCard;
         })
       })
+      // console.log("A ", cards)
       if(!firstCard){
         setFirstCard(card);
         saveTurns();
       }
       else {
         if(card.src == firstCard.src) {
-          setMatchedCount(matchedCount+2)
+          // setMatchedCount(matchedCount+2)
           saveState(card.id);
         } else {
           // if didn't match flip the two selected cards

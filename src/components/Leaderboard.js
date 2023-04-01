@@ -23,8 +23,8 @@ const Leaderboard = () => {
 
   const getLeaders = async () => {
     try {
-        let res = await axios.get(`http://localhost:5000/api/game/leaderboard`);
-        // let res = await axios.get(`https://memory-game-backend-8zmy.onrender.com/api/game/leaderboard`, { withCredentials: true });
+        // let res = await axios.get(`http://localhost:5000/api/game/leaderboard`);
+        let res = await axios.get(`https://memory-game-backend-8zmy.onrender.com/api/game/leaderboard`, { withCredentials: true });
         if(res?.data && res?.data.leaders) {
             setLeaders(res.data.leaders)
         }
